@@ -10,6 +10,7 @@ export default function Auth({ onAuth }){
   const [loading, setLoading] = useState(false)
   const [error, setError] = useState(null)
   const [connectionStatus, setConnectionStatus] = useState('checking')
+  const [retryCount, setRetryCount] = useState(0)
 
   // Add connection monitoring
   useEffect(() => {

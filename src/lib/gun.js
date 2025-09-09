@@ -5,19 +5,22 @@ import React from 'react'
 const GunContext = React.createContext(null)
 
 function createGun(){
-  // Use Render.com deployment URL as our primary peer
+  // Use WebSocket connection for better reliability
+  const peers = [
+    'wss://nepalconnect-n6xx.onrender.com/gun',
+    window.location.origin.replace('http', 'ws') + '/gun'
+  ].filter(Boolean);
+
   const gun = Gun({
-    peers: [
-      'https://nepalconnect-n6xx.onrender.com/gun',
-      window.location.origin + '/gun'
-    ],
+    peers,
     localStorage: false,
     radisk: false,
-    retry: 2000,
-    max: 1,
+    retry: 1000,
+    max: 3,
     super: false,
     axe: false,
-    websocket: window.WebSocket
+    multicast: false,
+    WebSocket: window.WebSocket
   })
   gun.SEA = SEA
   return { gun, SEA: gun.SEA }
