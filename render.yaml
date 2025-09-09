@@ -2,9 +2,11 @@ services:
   - type: web
     name: nepal-connect
     env: node
+    plan: free
     buildCommand: npm install && npm run build
     startCommand: npm start
     envVars:
       - key: NODE_VERSION
         value: 16
     healthCheckPath: /gun
+    autoDeploy: true

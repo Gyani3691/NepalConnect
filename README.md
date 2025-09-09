@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # Nepal Connect - Frontend Scaffold
 
 This repository contains a frontend scaffold for Nepal Connect — a decentralized, serverless chat app built with React, Vite, Tailwind, Gun.js, IPFS and WebRTC.
@@ -42,3 +43,7 @@ If you want, I can continue by:
 - adding call UI and live signaling through Gun
 
 
+=======
+# NepalConnect
+to acceess it globally for making chat and all the thing with thier love once .
+>>>>>>> 74d0fd13ceaaa0889675397591bc9dc5facd194c
