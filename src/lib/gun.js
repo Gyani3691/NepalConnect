@@ -5,18 +5,19 @@ import React from 'react'
 const GunContext = React.createContext(null)
 
 function createGun(){
-  // Use our own relay peer with fallbacks
+  // Use Render.com deployment URL as our primary peer
   const gun = Gun({
     peers: [
-      window.location.origin + '/gun', // Our own relay
-      'https://peer.gun.eco/gun' // Fallback
+      'https://nepalconnect-n6xx.onrender.com/gun',
+      window.location.origin + '/gun'
     ],
     localStorage: false,
     radisk: false,
-    retry: 1000,
-    max: 3,
+    retry: 2000,
+    max: 1,
     super: false,
-    axe: false
+    axe: false,
+    websocket: window.WebSocket
   })
   gun.SEA = SEA
   return { gun, SEA: gun.SEA }

@@ -5,8 +5,14 @@ const path = require('path');
 
 const app = express();
 
-// Enable CORS and JSON parsing
-app.use(cors());
+// Enable CORS for all routes
+app.use(cors({
+    origin: '*',
+    methods: ['GET', 'POST', 'PUT', 'DELETE', 'OPTIONS'],
+    allowedHeaders: ['Content-Type', 'Authorization']
+}));
+
+// Parse JSON bodies
 app.use(express.json());
 
 // Serve Gun.js
@@ -31,5 +37,6 @@ const gun = Gun({
     file: false, // Disable file persistence for free tier
     multicast: false,
     axe: false, // Disable experimental features
-    memory: true // Keep data in memory
+    memory: true, // Keep data in memory
+    peers: [] // Start with no peers - they'll connect to us
 });
