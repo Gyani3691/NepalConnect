@@ -5,23 +5,38 @@ import React from 'react'
 const GunContext = React.createContext(null)
 
 function createGun(){
-  // Use WebSocket connection for better reliability
+  // Create a reliable peer connection
+  const currentUrl = window.location.origin;
+  const isRender = currentUrl.includes('render.com');
+  
   const peers = [
-    'wss://nepalconnect-n6xx.onrender.com/gun',
-    window.location.origin.replace('http', 'ws') + '/gun'
+    'https://nepalconnect-n6xx.onrender.com/gun',
+    currentUrl + '/gun',
+    'https://gun-manhattan.herokuapp.com/gun'
   ].filter(Boolean);
+
+  console.log('Connecting to peers:', peers);
 
   const gun = Gun({
     peers,
     localStorage: false,
     radisk: false,
-    retry: 1000,
-    max: 3,
+    retry: 500,
+    max: Infinity,
     super: false,
     axe: false,
     multicast: false,
     WebSocket: window.WebSocket
-  })
+  });
+
+  // Add connection monitoring
+  gun.on('hi', peer => {
+    console.log('Peer connected:', peer);
+  });
+
+  gun.on('bye', peer => {
+    console.log('Peer disconnected:', peer);
+  });
   gun.SEA = SEA
   return { gun, SEA: gun.SEA }
 }

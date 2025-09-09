@@ -12,25 +12,47 @@ export default function Auth({ onAuth }){
   const [connectionStatus, setConnectionStatus] = useState('checking')
   const [retryCount, setRetryCount] = useState(0)
 
-  // Add connection monitoring
+  // Add enhanced connection monitoring
   useEffect(() => {
     if (!gun?.gun) return;
-    setConnectionStatus('connecting')
+    setConnectionStatus('connecting');
+    let connected = false;
     
-    const checkConnection = () => {
-      gun.gun.on('hi', peer => {
-        setConnectionStatus('connected')
-        setError(null)
-      })
-      gun.gun.on('bye', peer => {
-        setConnectionStatus('reconnecting')
-      })
-    }
-    
-    checkConnection()
-    const interval = setInterval(checkConnection, 2000)
-    return () => clearInterval(interval)
-  }, [gun])
+    const onPeerConnect = peer => {
+      console.log('Connected to peer:', peer);
+      setConnectionStatus('connected');
+      setError(null);
+      connected = true;
+    };
+
+    const onPeerDisconnect = peer => {
+      console.log('Disconnected from peer:', peer);
+      if (connected) {
+        setConnectionStatus('reconnecting');
+        setRetryCount(prev => prev + 1);
+      }
+    };
+
+    gun.gun.on('hi', onPeerConnect);
+    gun.gun.on('bye', onPeerDisconnect);
+
+    // Initial connection check
+    setTimeout(() => {
+      if (!connected) {
+        console.log('Initial connection timeout, retrying...');
+        setConnectionStatus('retrying');
+        gun.gun.opt({ peers: [
+          'https://nepalconnect-n6xx.onrender.com/gun',
+          'https://gun-manhattan.herokuapp.com/gun'
+        ]});
+      }
+    }, 5000);
+
+    return () => {
+      gun.gun.off('hi', onPeerConnect);
+      gun.gun.off('bye', onPeerDisconnect);
+    };
+  }, [gun]);
 
   async function submit(e){
     e.preventDefault()
